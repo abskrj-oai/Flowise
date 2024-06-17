@@ -18,7 +18,7 @@ class OBEETask implements INode {
         this.label = 'OBEE Tasks'
         this.name = 'obeeTasks'
         this.version = 1.0
-        this.type = 'PromptTemplate'
+        this.type = 'ChatPromptTemplate'
         this.description = 'Create task for your chatbot.'
         this.icon = 'obeeTasks.svg'
         this.category = 'Tasks'
@@ -54,7 +54,7 @@ class OBEETask implements INode {
         ${characteristics}
         `
 
-        const userMessage = '{question}'
+        const userMessage = '{input}'
 
         const prompt = ChatPromptTemplate.fromMessages([
             SystemMessagePromptTemplate.fromTemplate(templ),
