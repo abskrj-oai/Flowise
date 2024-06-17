@@ -245,6 +245,13 @@ const AddNodes = ({ nodesData, node, isAgentCanvas }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [nodesData, dispatch])
 
+    const nodeKeys = [
+        'Tasks',
+        ...Object.keys(nodes)
+            .filter((category) => category !== 'Tasks')
+            .sort()
+    ]
+
     return (
         <>
             <StyledFab
@@ -332,7 +339,7 @@ const AddNodes = ({ nodesData, node, isAgentCanvas }) => {
                                                 onChange={handleTabChange}
                                                 aria-label='tabs'
                                             >
-                                                {['LangChain', 'LlamaIndex'].map((item, index) => (
+                                                {['LangChain'].map((item, index) => (
                                                     <Tab
                                                         icon={
                                                             <div
@@ -378,7 +385,7 @@ const AddNodes = ({ nodesData, node, isAgentCanvas }) => {
                                                         fontWeight: 700
                                                     }}
                                                 >
-                                                    <span style={{ color: 'rgb(116,66,16)' }}>BETA</span>
+                                                    {/* <span style={{ color: 'rgb(116,66,16)' }}>BETA</span> */}
                                                 </div>
                                             </Tabs>
                                         )}
@@ -416,137 +423,133 @@ const AddNodes = ({ nodesData, node, isAgentCanvas }) => {
                                                     }
                                                 }}
                                             >
-                                                {Object.keys(nodes)
-                                                    .sort()
-                                                    .map((category) =>
-                                                        category === 'Vector Stores' ? (
-                                                            <></>
-                                                        ) : (
-                                                            <Accordion
-                                                                expanded={categoryExpanded[category] || false}
-                                                                onChange={handleAccordionChange(category)}
-                                                                key={category}
-                                                                disableGutters
+                                                {nodeKeys.map((category) =>
+                                                    category === 'Vector Stores' ? (
+                                                        <></>
+                                                    ) : (
+                                                        <Accordion
+                                                            expanded={categoryExpanded[category] || false}
+                                                            onChange={handleAccordionChange(category)}
+                                                            key={category}
+                                                            disableGutters
+                                                        >
+                                                            <AccordionSummary
+                                                                expandIcon={<ExpandMoreIcon />}
+                                                                aria-controls={`nodes-accordian-${category}`}
+                                                                id={`nodes-accordian-header-${category}`}
                                                             >
-                                                                <AccordionSummary
-                                                                    expandIcon={<ExpandMoreIcon />}
-                                                                    aria-controls={`nodes-accordian-${category}`}
-                                                                    id={`nodes-accordian-header-${category}`}
-                                                                >
-                                                                    {category.split(';').length > 1 ? (
-                                                                        <div
-                                                                            style={{
-                                                                                display: 'flex',
-                                                                                flexDirection: 'row',
-                                                                                alignItems: 'center'
+                                                                {category.split(';').length > 1 ? (
+                                                                    <div
+                                                                        style={{
+                                                                            display: 'flex',
+                                                                            flexDirection: 'row',
+                                                                            alignItems: 'center'
+                                                                        }}
+                                                                    >
+                                                                        <Typography variant='h5'>{category.split(';')[0]}</Typography>
+                                                                        &nbsp;
+                                                                        <Chip
+                                                                            sx={{
+                                                                                width: 'max-content',
+                                                                                fontWeight: 700,
+                                                                                fontSize: '0.65rem',
+                                                                                background:
+                                                                                    category.split(';')[1] === 'DEPRECATING'
+                                                                                        ? theme.palette.warning.main
+                                                                                        : theme.palette.teal.main,
+                                                                                color:
+                                                                                    category.split(';')[1] !== 'DEPRECATING'
+                                                                                        ? 'white'
+                                                                                        : 'inherit'
+                                                                            }}
+                                                                            size='small'
+                                                                            label={category.split(';')[1]}
+                                                                        />
+                                                                    </div>
+                                                                ) : (
+                                                                    <Typography variant='h5'>{category}</Typography>
+                                                                )}
+                                                            </AccordionSummary>
+                                                            <AccordionDetails>
+                                                                {nodes[category].map((node, index) => (
+                                                                    <div
+                                                                        key={node.name}
+                                                                        onDragStart={(event) => onDragStart(event, node)}
+                                                                        draggable
+                                                                    >
+                                                                        <ListItemButton
+                                                                            sx={{
+                                                                                p: 0,
+                                                                                borderRadius: `${customization.borderRadius}px`,
+                                                                                cursor: 'move'
                                                                             }}
                                                                         >
-                                                                            <Typography variant='h5'>{category.split(';')[0]}</Typography>
-                                                                            &nbsp;
-                                                                            <Chip
-                                                                                sx={{
-                                                                                    width: 'max-content',
-                                                                                    fontWeight: 700,
-                                                                                    fontSize: '0.65rem',
-                                                                                    background:
-                                                                                        category.split(';')[1] === 'DEPRECATING'
-                                                                                            ? theme.palette.warning.main
-                                                                                            : theme.palette.teal.main,
-                                                                                    color:
-                                                                                        category.split(';')[1] !== 'DEPRECATING'
-                                                                                            ? 'white'
-                                                                                            : 'inherit'
-                                                                                }}
-                                                                                size='small'
-                                                                                label={category.split(';')[1]}
-                                                                            />
-                                                                        </div>
-                                                                    ) : (
-                                                                        <Typography variant='h5'>{category}</Typography>
-                                                                    )}
-                                                                </AccordionSummary>
-                                                                <AccordionDetails>
-                                                                    {nodes[category].map((node, index) => (
-                                                                        <div
-                                                                            key={node.name}
-                                                                            onDragStart={(event) => onDragStart(event, node)}
-                                                                            draggable
-                                                                        >
-                                                                            <ListItemButton
-                                                                                sx={{
-                                                                                    p: 0,
-                                                                                    borderRadius: `${customization.borderRadius}px`,
-                                                                                    cursor: 'move'
-                                                                                }}
-                                                                            >
-                                                                                <ListItem alignItems='center'>
-                                                                                    <ListItemAvatar>
+                                                                            <ListItem alignItems='center'>
+                                                                                <ListItemAvatar>
+                                                                                    <div
+                                                                                        style={{
+                                                                                            width: 50,
+                                                                                            height: 50,
+                                                                                            borderRadius: '50%',
+                                                                                            backgroundColor: 'white'
+                                                                                        }}
+                                                                                    >
+                                                                                        <img
+                                                                                            style={{
+                                                                                                width: '100%',
+                                                                                                height: '100%',
+                                                                                                padding: 10,
+                                                                                                objectFit: 'contain'
+                                                                                            }}
+                                                                                            alt={node.name}
+                                                                                            src={`${baseURL}/api/v1/node-icon/${node.name}`}
+                                                                                        />
+                                                                                    </div>
+                                                                                </ListItemAvatar>
+                                                                                <ListItemText
+                                                                                    sx={{ ml: 1 }}
+                                                                                    primary={
                                                                                         <div
                                                                                             style={{
-                                                                                                width: 50,
-                                                                                                height: 50,
-                                                                                                borderRadius: '50%',
-                                                                                                backgroundColor: 'white'
+                                                                                                display: 'flex',
+                                                                                                flexDirection: 'row',
+                                                                                                alignItems: 'center'
                                                                                             }}
                                                                                         >
-                                                                                            <img
-                                                                                                style={{
-                                                                                                    width: '100%',
-                                                                                                    height: '100%',
-                                                                                                    padding: 10,
-                                                                                                    objectFit: 'contain'
-                                                                                                }}
-                                                                                                alt={node.name}
-                                                                                                src={`${baseURL}/api/v1/node-icon/${node.name}`}
-                                                                                            />
+                                                                                            <span>{node.label}</span>
+                                                                                            &nbsp;
+                                                                                            {node.badge && (
+                                                                                                <Chip
+                                                                                                    sx={{
+                                                                                                        width: 'max-content',
+                                                                                                        fontWeight: 700,
+                                                                                                        fontSize: '0.65rem',
+                                                                                                        background:
+                                                                                                            node.badge === 'DEPRECATING'
+                                                                                                                ? theme.palette.warning.main
+                                                                                                                : theme.palette.teal.main,
+                                                                                                        color:
+                                                                                                            node.badge !== 'DEPRECATING'
+                                                                                                                ? 'white'
+                                                                                                                : 'inherit'
+                                                                                                    }}
+                                                                                                    size='small'
+                                                                                                    label={node.badge}
+                                                                                                />
+                                                                                            )}
                                                                                         </div>
-                                                                                    </ListItemAvatar>
-                                                                                    <ListItemText
-                                                                                        sx={{ ml: 1 }}
-                                                                                        primary={
-                                                                                            <div
-                                                                                                style={{
-                                                                                                    display: 'flex',
-                                                                                                    flexDirection: 'row',
-                                                                                                    alignItems: 'center'
-                                                                                                }}
-                                                                                            >
-                                                                                                <span>{node.label}</span>
-                                                                                                &nbsp;
-                                                                                                {node.badge && (
-                                                                                                    <Chip
-                                                                                                        sx={{
-                                                                                                            width: 'max-content',
-                                                                                                            fontWeight: 700,
-                                                                                                            fontSize: '0.65rem',
-                                                                                                            background:
-                                                                                                                node.badge === 'DEPRECATING'
-                                                                                                                    ? theme.palette.warning
-                                                                                                                          .main
-                                                                                                                    : theme.palette.teal
-                                                                                                                          .main,
-                                                                                                            color:
-                                                                                                                node.badge !== 'DEPRECATING'
-                                                                                                                    ? 'white'
-                                                                                                                    : 'inherit'
-                                                                                                        }}
-                                                                                                        size='small'
-                                                                                                        label={node.badge}
-                                                                                                    />
-                                                                                                )}
-                                                                                            </div>
-                                                                                        }
-                                                                                        secondary={node.description}
-                                                                                    />
-                                                                                </ListItem>
-                                                                            </ListItemButton>
-                                                                            {index === nodes[category].length - 1 ? null : <Divider />}
-                                                                        </div>
-                                                                    ))}
-                                                                </AccordionDetails>
-                                                            </Accordion>
-                                                        )
-                                                    )}
+                                                                                    }
+                                                                                    secondary={node.description}
+                                                                                />
+                                                                            </ListItem>
+                                                                        </ListItemButton>
+                                                                        {index === nodes[category].length - 1 ? null : <Divider />}
+                                                                    </div>
+                                                                ))}
+                                                            </AccordionDetails>
+                                                        </Accordion>
+                                                    )
+                                                )}
                                             </List>
                                         </Box>
                                     </PerfectScrollbar>

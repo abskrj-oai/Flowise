@@ -13,6 +13,10 @@ export const initialState = {
     isDarkMode: localStorage.getItem('isDarkMode') === 'true' ? true : false
 }
 
+if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    initialState.isDarkMode = true
+}
+
 // ==============================|| CUSTOMIZATION REDUCER ||============================== //
 
 const customizationReducer = (state = initialState, action) => {
