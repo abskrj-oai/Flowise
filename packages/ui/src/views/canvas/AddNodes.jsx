@@ -39,7 +39,7 @@ import { StyledFab } from '@/ui-component/button/StyledFab'
 // icons
 import { IconPlus, IconSearch, IconMinus, IconX } from '@tabler/icons-react'
 import LlamaindexPNG from '@/assets/images/llamaindex.png'
-import LangChainPNG from '@/assets/images/langchain.png'
+import ObeePNG from '@/assets/images/obee.png'
 
 // const
 import { baseURL } from '@/store/constant'
@@ -248,7 +248,7 @@ const AddNodes = ({ nodesData, node, isAgentCanvas }) => {
     const nodeKeys = [
         'Tasks',
         ...Object.keys(nodes)
-            .filter((category) => category !== 'Tasks')
+            .filter((category) => !['Tasks', 'Agents'].includes(category))
             .sort()
     ]
 
@@ -339,7 +339,7 @@ const AddNodes = ({ nodesData, node, isAgentCanvas }) => {
                                                 onChange={handleTabChange}
                                                 aria-label='tabs'
                                             >
-                                                {['LangChain'].map((item, index) => (
+                                                {['OBEE'].map((item, index) => (
                                                     <Tab
                                                         icon={
                                                             <div
@@ -354,7 +354,7 @@ const AddNodes = ({ nodesData, node, isAgentCanvas }) => {
                                                                         borderRadius: '50%',
                                                                         objectFit: 'contain'
                                                                     }}
-                                                                    src={index === 0 ? LangChainPNG : LlamaindexPNG}
+                                                                    src={index === 0 ? ObeePNG : LlamaindexPNG}
                                                                     alt={item}
                                                                 />
                                                             </div>
